@@ -208,12 +208,14 @@ __marimo__/
 
 # Archivos específicos del proyecto de automatización
 # Carpeta de datos (contiene información sensible de personas)
-data/
+data/*
+!data/.gitkeep
 
 # Archivos de datos sensibles
 *.xlsx
 *.csv
-plantilla/
+plantilla/*
+!plantilla/.gitkeep
 exports/
 reports/
 output/
@@ -225,7 +227,6 @@ credentials.json
 token.txt
 *.env.local
 *.env.production
-scripts/
 
 # Archivos del sistema operativo Windows
 Thumbs.db
