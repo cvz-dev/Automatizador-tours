@@ -97,20 +97,21 @@ def guardar_registros(df, fecha_solicitada):
     copiar_formato('../data/Tour puertas abiertas ' + nombre_excel + '.xlsx', nombre_hoja)
     copiar_datos(df, '../data/Tour puertas abiertas ' + nombre_excel + '.xlsx', nombre_hoja, 8)
 
-existen_registros_norte = False
-existen_registros_sur = False
+def registros_excel():
+    existen_registros_norte = False
+    existen_registros_sur = False
 
-df_norte, df_sur = filtrar_datos("../data/prueba_lectura_registros.csv")
-fecha_solicitada = datetime(2025, 5, 28).date()
+    df_norte, df_sur = filtrar_datos("../data/prueba_lectura_registros.csv")
+    fecha_solicitada = datetime(2025, 5, 28).date()
 
-df_sur_fecha = df_sur[df_sur['Día de visita Sur_standar'].dt.date == fecha_solicitada]
-if not df_sur_fecha.empty:
-    df_sur_fecha = df_sur_fecha.sort_values(by='Nombre')
-    guardar_registros(df_sur_fecha, fecha_solicitada)
-    existen_registros_sur = True
+    df_sur_fecha = df_sur[df_sur['Día de visita Sur_standar'].dt.date == fecha_solicitada]
+    if not df_sur_fecha.empty:
+        df_sur_fecha = df_sur_fecha.sort_values(by='Nombre')
+        guardar_registros(df_sur_fecha, fecha_solicitada)
+        existen_registros_sur = True
 
-df_norte_fecha = df_norte[df_norte['Día de visita Norte_standar'].dt.date == fecha_solicitada]
-if not df_norte_fecha.empty:
-    df_norte_fecha = df_norte_fecha.sort_values(by='Nombre')
-    guardar_registros(df_norte_fecha, fecha_solicitada)
-    existen_registros_norte = True
+    df_norte_fecha = df_norte[df_norte['Día de visita Norte_standar'].dt.date == fecha_solicitada]
+    if not df_norte_fecha.empty:
+        df_norte_fecha = df_norte_fecha.sort_values(by='Nombre')
+        guardar_registros(df_norte_fecha, fecha_solicitada)
+        existen_registros_norte = True
