@@ -24,5 +24,5 @@ Este proyecto tiene como objetivo el automatizar el flujo de trabajo de la obten
 - `README.md`: esta documentación.
 
 ## Autor
-- Sebas
+- cvz-dev
 
