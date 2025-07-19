@@ -74,7 +74,6 @@ def guardar_registros(df, fecha_solicitada):
 
     busqueda = buscar_archivo("../data", nombre_excel)
     if busqueda == 'Encontrado':
-        print('Encontrado')
         if existe_hoja('../data/Tour puertas abiertas ' + nombre_excel + '.xlsx', nombre_hoja):
             print('Existe la hoja')
             copiar_datos(df, '../data/Tour puertas abiertas ' + nombre_excel + '.xlsx', nombre_hoja, 4)
@@ -85,13 +84,11 @@ def guardar_registros(df, fecha_solicitada):
             wb.create_sheet(nombre_hoja)
             wb.save('../data/Tour puertas abiertas ' + nombre_excel + '.xlsx')
     elif busqueda == 'No encontrado' :
-        print('No encontrado')
         wb = openpyxl.Workbook()
         hoja_nueva = wb.active
         hoja_nueva.title = nombre_hoja
         wb.save('../data/Tour puertas abiertas ' + nombre_excel + '.xlsx')
     elif busqueda == 'Path invalido':
-        print('Path invalido')
         sys.exit(1)
     
     copiar_formato('../data/Tour puertas abiertas ' + nombre_excel + '.xlsx', nombre_hoja)
@@ -101,17 +98,19 @@ def registros_excel():
     existen_registros_norte = False
     existen_registros_sur = False
 
-    df_norte, df_sur = filtrar_datos("../data/prueba_lectura_registros.csv")
+    df_norte, df_sur = filtrar_datos("../data/registros_tours.csv")
     fecha_solicitada = datetime(2025, 5, 28).date()
 
     df_sur_fecha = df_sur[df_sur['Día de visita Sur_standar'].dt.date == fecha_solicitada]
     if not df_sur_fecha.empty:
+        df_sur_fecha = df_sur_fecha.drop('Día de visita Sur_standar', axis=1)
         df_sur_fecha = df_sur_fecha.sort_values(by='Nombre')
         guardar_registros(df_sur_fecha, fecha_solicitada)
         existen_registros_sur = True
 
     df_norte_fecha = df_norte[df_norte['Día de visita Norte_standar'].dt.date == fecha_solicitada]
     if not df_norte_fecha.empty:
+        df_norte_fecha = df_norte_fecha.drop('Día de visita Norte_standar', axis=1)
         df_norte_fecha = df_norte_fecha.sort_values(by='Nombre')
         guardar_registros(df_norte_fecha, fecha_solicitada)
         existen_registros_norte = True

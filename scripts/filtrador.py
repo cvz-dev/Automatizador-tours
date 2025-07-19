@@ -9,6 +9,9 @@ def limpiar_fecha(fecha):
         'septiembre':"09", 'octubre': "10", 'noviembre': "11", 'diciembre':"12" 
     }
 
+    if pd.isna(fecha) or fecha is None:
+        return pd.NaT
+
     if isinstance(fecha, str):
         try:
             fecha = fecha.lower()
@@ -33,9 +36,9 @@ def limpiar_fecha(fecha):
             return fecha
         
         except Exception as desc:
-            return fecha
+            return pd.NaT
         
-    return fecha
+    return pd.NaT
 
 #Definir una función para regresar dos DataFrames filtrados por cada campus
 def filtrar_datos(ruta):

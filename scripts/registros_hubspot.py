@@ -98,99 +98,107 @@ def obtener_registros_hubspot ():
 
     # Cargar el token desde .env
     load_dotenv()
-    hubspot_token = os.getenv('HUBSPOT_TOKEN')
+    try: 
+        hubspot_token = os.getenv('HUBSPOT_TOKEN')
 
-    # ID del formulario que quieres consultar
-    form_id = '924d72ee-3bb4-4f76-a9c7-4a129518fa91'
+        # ID del formulario que quieres consultar
+        form_id = '924d72ee-3bb4-4f76-a9c7-4a129518fa91'
 
-    # Endpoint para obtener envíos del formulario
-    url = f'https://api.hubapi.com/form-integrations/v1/submissions/forms/{form_id}'
+        # Endpoint para obtener envíos del formulario
+        url = f'https://api.hubapi.com/form-integrations/v1/submissions/forms/{form_id}'
 
-    # Headers para la autenticación
-    headers = {
-        'Authorization': f'Bearer {hubspot_token}',
-        'Content-Type': 'application/json'
-    }
-
-    # Arreglo para guardar todos los registros
-    registros = []
-
-    # Parámetros para la primera solicitud
-    params = {
-        'limit': 50 # Número máximo de registros que se pueden solicitar por consulta
-    }
-
-    token_siguiente_pagina = None
-    contador_paginas = 0
-    objetivo_registros = 250
-
-    labels_campos = obtener_labels_formulario(form_id, headers)
-
-    while len(registros) < objetivo_registros:
-
-        # Si existe, agregar token para la siguiente página
-        if token_siguiente_pagina:
-            params['after'] = token_siguiente_pagina
-
-        # Hacer la solicitud
-        response = requests.get(url, headers=headers, params=params)
-
-        if response.status_code == 200:
-            data = response.json()
-            contador_paginas += 1
-
-            # Agregar los registros de esta página a al arreglo
-            registros.extend(data['results'])
-
-            # Verificar si hay más páginas
-            if 'paging' in data and 'next' in data['paging']:
-                # Obtener el token de la URL
-                proxima_url = data['paging']['next']['link']
-                token_siguiente_pagina = proxima_url.split('after=')[1].split('&')[0]
-            else:
-                break
-        else:
-            print(f"Error: {response.status_code}")
-            print(response.text)
-            break
-
-    # Lista para almacenar los datos
-    datos_procesados = []
-
-    for registro in registros:
-        # Convertir timestamp a fecha legible
-        fecha_envio = datetime.fromtimestamp(registro['submittedAt'] / 1000)
-
-        # Crear un diccionario con los datos de registro
-        fila = {
-            'Fecha de envío': fecha_envio.strftime('%Y-%m-%d %H:%M%S'),
+        # Headers para la autenticación
+        headers = {
+            'Authorization': f'Bearer {hubspot_token}',
+            'Content-Type': 'application/json'
         }
 
-        #Extraer todos los valores del formulario
-        for campo in registro['values']:
+        # Arreglo para guardar todos los registros
+        registros = []
 
-            # Evitamos agregar a la columna que no se requiere
-            if campo['name'] not in columna_excluida:
-                fila[campo['name']] = campo['value']
+        # Parámetros para la primera solicitud
+        params = {
+            'limit': 50 # Número máximo de registros que se pueden solicitar por consulta
+        }
 
-        datos_procesados.append(fila)
+        token_siguiente_pagina = None
+        contador_paginas = 0
+        objetivo_registros = 250
 
-    # Crear DataFrame
-    df = pd.DataFrame(datos_procesados)
+        labels_campos = obtener_labels_formulario(form_id, headers)
 
-    # Renombrar columnas usando los labels obtenidos
-    if labels_campos:
-        df.rename(columns=labels_campos, inplace=True)
+        while len(registros) < objetivo_registros:
 
-    # Reordenamo las columnas para una mejor presentación
-    df = reordenar_columnas(df, orden_columnas)
+            # Si existe, agregar token para la siguiente página
+            if token_siguiente_pagina:
+                params['after'] = token_siguiente_pagina
 
-    # Path y nombre del arhivo
-    archivo_excel = f'../data/regitros_tours_con_API.xlsx'
-    archivo_csv = f'../data/regitros_tours_con_API.csv'
+            # Hacer la solicitud
+            response = requests.get(url, headers=headers, params=params)
 
-    # Exportar a Excel
-    df.to_excel(archivo_excel, index=False)
-    #Exportar a csv
-    df.to_csv(archivo_csv, index=False)
-    
+            if response.status_code == 200:
+                data = response.json()
+                contador_paginas += 1
+
+                # Agregar los registros de esta página a al arreglo
+                registros.extend(data['results'])
+
+                # Verificar si hay más páginas
+                if 'paging' in data and 'next' in data['paging']:
+                    # Obtener el token de la URL
+                    proxima_url = data['paging']['next']['link']
+                    token_siguiente_pagina = proxima_url.split('after=')[1].split('&')[0]
+                else:
+                    break
+            else:
+                print(f"Error: {response.status_code}")
+                print(response.text)
+                break
+
+        # Lista para almacenar los datos
+        datos_procesados = []
+
+        for registro in registros:
+            # Convertir timestamp a fecha legible
+            fecha_envio = datetime.fromtimestamp(registro['submittedAt'] / 1000)
+
+            # Crear un diccionario con los datos de registro
+            fila = {
+                'Fecha de envío': fecha_envio.strftime('%Y-%m-%d %H:%M:%S'),
+            }
+
+            #Extraer todos los valores del formulario
+            for campo in registro['values']:
+
+                # Evitamos agregar a la columna que no se requiere
+                if campo['name'] not in columna_excluida:
+                    fila[campo['name']] = campo['value']
+
+            datos_procesados.append(fila)
+
+        # Crear DataFrame
+        df = pd.DataFrame(datos_procesados)
+
+        # Renombrar columnas usando los labels obtenidos
+        if labels_campos:
+            df.rename(columns=labels_campos, inplace=True)
+
+        # Reordenamos las columnas para una mejor presentación
+        df = reordenar_columnas(df, orden_columnas)
+
+        # Path y nombre del arhivo
+        archivo_excel = f'../data/registros_tours.xlsx'
+        archivo_csv = f'../data/registros_tours.csv'
+
+        # Exportar a Excel
+        df.to_excel(archivo_excel, index=False)
+        #Exportar a csv
+        df.to_csv(archivo_csv, index=False)
+
+        if os.path.exists(archivo_csv):
+            return True
+        else:
+            return False
+        
+    except Exception:
+        return False
