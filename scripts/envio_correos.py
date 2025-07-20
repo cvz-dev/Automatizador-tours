@@ -7,7 +7,7 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 
-def envio_registros(dia, registros_norte, registros_sur):
+def envio_registros(fecha, registros_norte, registros_sur):
     try: 
         load_dotenv()
         usuario = os.getenv('USUARIO')
@@ -18,7 +18,7 @@ def envio_registros(dia, registros_norte, registros_sur):
         puerto = os.getenv('PUERTO')
 
         # Asunto y cuerpo del email
-        asunto = f"Registros tour puertas abiertas {dia}"
+        asunto = f"Registros tour puertas abiertas {fecha}"
 
         # Se define el cuerpo del correo dependiendo de si existen registros en el campus norte y sur
         if (registros_norte and registros_sur):
@@ -80,8 +80,3 @@ def envio_registros(dia, registros_norte, registros_sur):
     except Exception as desc:
         print(f"Error inesperado: {str(desc)}")
         return False
-
-dia = "19 de julio 2025"
-registros_norte = True
-registros_sur = True
-envio_registros(dia, registros_norte, registros_sur)

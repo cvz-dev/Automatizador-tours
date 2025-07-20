@@ -114,3 +114,6 @@ def registros_excel():
         df_norte_fecha = df_norte_fecha.sort_values(by='Nombre')
         guardar_registros(df_norte_fecha, fecha_solicitada)
         existen_registros_norte = True
+
+    fecha_solicitada_string = fecha_solicitada.strftime("%d %m %Y")
+    return fecha_solicitada_string, existen_registros_norte, existen_registros_sur
