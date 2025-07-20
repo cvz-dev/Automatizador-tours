@@ -21,9 +21,9 @@
 - Acomoda lo datos filtrados en una plantilla dependiendo del mes y año, si no existe la plantilla se crea.
 
 ## Script - envio_correo.py
-- En pausa
+- Terminado
 - Enviará el correo con el archivo de los registros junto con un mensaje personalizado
 
 ## main.py
-- En proceso
+- Terminado?
 - Ejecutará todos los scripts

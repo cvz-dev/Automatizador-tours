@@ -7,7 +7,7 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 
-def envio_registros(fecha, registros_norte, registros_sur):
+def envio_registros(fecha, registros_norte, registros_sur, nombre_excel):
     try: 
         load_dotenv()
         usuario = os.getenv('USUARIO')
@@ -48,12 +48,13 @@ def envio_registros(fecha, registros_norte, registros_sur):
         mensaje.attach(MIMEText(cuerpo, 'plain', 'utf-8'))
 
         # Guardamos el archivo de excel con los registros
-        registros_excel = "../data/registros_tours.xlsx"
-        nombre_excel = os.path.basename(registros_excel)
+        ruta_excel = f"../data/{nombre_excel}"
+        #nombre_excel = os.path.basename(registros_excel)
+        print(nombre_excel)
 
         # Definimos si se va a adjuntar o no el archivo de excel
         if registros_norte or registros_sur:
-            with open(registros_excel, "rb") as attachment:
+            with open(ruta_excel, "rb") as attachment:
                 # Agregamos el archivo de excel
                 part = MIMEBase("application", "vnd.openxmlformats-officedocument.spreadsheetml.sheet")
                 part.set_payload(attachment.read())

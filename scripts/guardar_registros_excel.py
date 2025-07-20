@@ -70,33 +70,37 @@ def guardar_registros(df, fecha_solicitada):
     mes = meses[fecha_solicitada.strftime("%m")]
     año = fecha_solicitada.strftime("%Y")
     nombre_hoja = dia + " de " + mes
-    nombre_excel = mes + " " + año
+    nombre_excel = "Tour puertas abiertas " + mes + " " + año
+    ruta_excel = '../data/' + nombre_excel + '.xlsx'
 
     busqueda = buscar_archivo("../data", nombre_excel)
     if busqueda == 'Encontrado':
-        if existe_hoja('../data/Tour puertas abiertas ' + nombre_excel + '.xlsx', nombre_hoja):
+        if existe_hoja(ruta_excel, nombre_hoja):
             print('Existe la hoja')
-            copiar_datos(df, '../data/Tour puertas abiertas ' + nombre_excel + '.xlsx', nombre_hoja, 4)
-            return
+            copiar_datos(df, ruta_excel, nombre_hoja, 4)
+            return nombre_excel
         else:
             print('No existe la hoja')
-            wb = openpyxl.load_workbook('../data/Tour puertas abiertas ' + nombre_excel + '.xlsx')
+            wb = openpyxl.load_workbook(ruta_excel)
             wb.create_sheet(nombre_hoja)
-            wb.save('../data/Tour puertas abiertas ' + nombre_excel + '.xlsx')
+            wb.save(ruta_excel)
     elif busqueda == 'No encontrado' :
         wb = openpyxl.Workbook()
         hoja_nueva = wb.active
         hoja_nueva.title = nombre_hoja
-        wb.save('../data/Tour puertas abiertas ' + nombre_excel + '.xlsx')
+        wb.save(ruta_excel)
     elif busqueda == 'Path invalido':
         sys.exit(1)
     
-    copiar_formato('../data/Tour puertas abiertas ' + nombre_excel + '.xlsx', nombre_hoja)
-    copiar_datos(df, '../data/Tour puertas abiertas ' + nombre_excel + '.xlsx', nombre_hoja, 8)
+    copiar_formato(ruta_excel, nombre_hoja)
+    copiar_datos(df, ruta_excel, nombre_hoja, 8)
+
+    return nombre_excel
 
 def registros_excel():
     existen_registros_norte = False
     existen_registros_sur = False
+    nombre_excel = None
 
     df_norte, df_sur = filtrar_datos("../data/registros_tours.csv")
     fecha_solicitada = datetime(2025, 5, 28).date()
@@ -105,15 +109,21 @@ def registros_excel():
     if not df_sur_fecha.empty:
         df_sur_fecha = df_sur_fecha.drop('Día de visita Sur_standar', axis=1)
         df_sur_fecha = df_sur_fecha.sort_values(by='Nombre')
-        guardar_registros(df_sur_fecha, fecha_solicitada)
+        nombre_excel = guardar_registros(df_sur_fecha, fecha_solicitada)
         existen_registros_sur = True
 
     df_norte_fecha = df_norte[df_norte['Día de visita Norte_standar'].dt.date == fecha_solicitada]
     if not df_norte_fecha.empty:
         df_norte_fecha = df_norte_fecha.drop('Día de visita Norte_standar', axis=1)
         df_norte_fecha = df_norte_fecha.sort_values(by='Nombre')
-        guardar_registros(df_norte_fecha, fecha_solicitada)
+        if not nombre_excel: 
+            nombre_excel = guardar_registros(df_norte_fecha, fecha_solicitada)
+        else: 
+            guardar_registros(df_norte_fecha, fecha_solicitada)
         existen_registros_norte = True
 
     fecha_solicitada_string = fecha_solicitada.strftime("%d %m %Y")
-    return fecha_solicitada_string, existen_registros_norte, existen_registros_sur
+    print(nombre_excel)
+    nombre_excel = nombre_excel + ".xlsx"
+    print(nombre_excel)
+    return fecha_solicitada_string, existen_registros_norte, existen_registros_sur, nombre_excel
