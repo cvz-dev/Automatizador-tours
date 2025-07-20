@@ -5,6 +5,8 @@ Este proyecto tiene como objetivo el automatizar el flujo de trabajo de la obten
 ## Características
 - Automatiza el proceso de recolección y envío de los registros de los tours de la Universidad Anáhuac
 - en proceso
+- llevar un registro de envios realizados correctamente y erroes (idea)
+- enviar un correo a si llega a fallar la automatización (idea)
 
 ## Requisitos?
 - En proceso
