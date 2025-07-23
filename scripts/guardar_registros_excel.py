@@ -15,7 +15,8 @@ def buscar_archivo(ruta, nombre_archivo):
             if re.search(nombre_archivo,archivo):
                 return 'Encontrado'
         return 'No encontrado'
-    except FileNotFoundError:
+    except FileNotFoundError as desc:
+        print (desc)
         return 'Path invalido'
 
 def existe_hoja(ruta, nombre_hoja):
@@ -23,7 +24,8 @@ def existe_hoja(ruta, nombre_hoja):
         wb = openpyxl.load_workbook(ruta)
         hoja_wb = wb[nombre_hoja]
         return True
-    except KeyError:
+    except KeyError as desc:
+        print (desc)
         return False
 
 def copiar_formato(almacenamiento, ruta, nombre_hoja):
