@@ -5,6 +5,9 @@ on:
   schedule:
     - cron: '*/5 * * * *'
 
+permissions:
+  contents: read  # Permiso necesario para leer el contenido del repositorio
+
 jobs:
   ejecutar-script:
     runs-on: ubuntu-latest
