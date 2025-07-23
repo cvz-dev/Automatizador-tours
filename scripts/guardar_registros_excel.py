@@ -91,7 +91,7 @@ def guardar_registros(campus, df, fecha_solicitada, almacenamiento, descargado):
             busqueda = buscar_archivo("../data", nombre_excel)
         else:
             busqueda = existe_archivo(f"data/{nombre_excel}.xlsx", "tours-automaticos")
-        print("se encontró archico")
+        print("se encontró archivo", busqueda)
             
     if busqueda == 'Encontrado':
         if (almacenamiento == "nube" and descargado == False):
