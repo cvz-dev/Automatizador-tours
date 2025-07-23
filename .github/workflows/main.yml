@@ -1,0 +1,37 @@
+name: Ejecutar tours automatizados
+
+on:
+  workflow_dispatch:  # Permite ejecutar manualmente desde GitHub
+  schedule:
+    - cron: '0 18 * * 3' # Miércoles a las 12:00 PM (CDMX)
+    - cron: '30 22 * * 5' # Viernes a las 4:30 PM (CDMX)
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clonar el repositorio
+        uses: actions/checkout@v3
+
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.13.2'
+
+      - name: Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Ejecutar script principal
+        run: python main.py
+        env:
+          MODO_ALMACENAMIENTO: nube
+          HUBSPOT_TOKEN: ${{ secrets.HUBSPOT_TOKEN }}
+          CREDENCIAL_GOOGLE: ${{ secrets.CREDENCIAL_GOOGLE }}
+          USUARIO: ${{ secrets.USUARIO }}
+          APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
+          RECEPTORES: ${{ secrets.RECEPTORES }}
+          SERVIDOR: ${{ secrets.SERVIDOR }}
+          PUERTO: ${{ secrets.PUERTO }}
