@@ -6,13 +6,37 @@ from datetime import datetime, timedelta
 
 # Conectarse a Google Cloud Storage
 def obtener_cliente():
+    """Obtiene cliente de Google Cloud Storage compatible con GitHub Actions y desarrollo local"""
     load_dotenv()
-    service_account_file = os.getenv("CREDENCIAL_GOOGLE")
-    print("credencial cargada")
     
-    credentials = service_account.Credentials.from_service_account_file(service_account_file)
-    print("credenciales listas")
-    return storage.Client(credentials=credentials)
+    # Obtener credenciales desde variable de entorno
+    credenciales = os.getenv("CREDENCIAL_GOOGLE")
+    
+    if not credenciales:
+        raise Exception("Variable de entorno CREDENCIAL_GOOGLE no encontrada")
+    
+    try:
+        # Caso 1: GitHub Actions - la variable contiene el JSON completo
+        if credenciales.strip().startswith('{'):
+            print("🔧 Usando credenciales desde JSON en variable de entorno")
+            credentials_dict = json.loads(credenciales)
+            credentials = service_account.Credentials.from_service_account_info(credentials_dict)
+            
+        # Caso 2: Desarrollo local - la variable contiene la ruta al archivo
+        elif os.path.isfile(credenciales):
+            print("🔧 Usando credenciales desde archivo local")
+            credentials = service_account.Credentials.from_service_account_file(credenciales)
+            
+        else:
+            raise Exception("CREDENCIAL_GOOGLE no es un JSON válido ni una ruta de archivo válida")
+        
+        print("✅ Credenciales cargadas exitosamente")
+        return storage.Client(credentials=credentials)
+        
+    except json.JSONDecodeError as e:
+        raise Exception(f"Error al parsear JSON de credenciales: {e}")
+    except Exception as e:
+        raise Exception(f"Error al cargar credenciales: {e}"credentials=credentials)
 
 # Subir un archivo a Google Cloud Storage
 def subir_archivo(ruta_local, ruta_nube, nombre_bucket="tours-automaticos"):
