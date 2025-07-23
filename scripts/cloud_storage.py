@@ -64,4 +64,5 @@ def existe_archivo(ruta_gcs, nombre_bucket="tours-automaticos"):
         else:
             return 'No encontrado'
     except Exception as e:
+        print(e)
         return 'Path invalido'
