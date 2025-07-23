@@ -55,7 +55,9 @@ def descargar_archivo(ruta_local, ruta_nube, nombre_bucket="tours-automaticos"):
 # Regresa true si el archivo existe en GCS y False si no existe
 def existe_archivo(ruta_gcs, nombre_bucket="tours-automaticos"):
     try:
+        print("buscar cliente")
         cliente = obtener_cliente()
+        print("se obtiene el cliente")
         bucket = cliente.bucket(nombre_bucket)
         archivo_gcs = bucket.blob(ruta_gcs)
         
