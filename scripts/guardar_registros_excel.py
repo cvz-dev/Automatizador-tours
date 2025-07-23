@@ -96,6 +96,7 @@ def guardar_registros(campus, df, fecha_solicitada, almacenamiento, descargado):
     if busqueda == 'Encontrado':
         if (almacenamiento == "nube" and descargado == False):
             descargar_archivo(ruta_excel, f"data/{nombre_excel}.xlsx", "tours-automaticos")
+            print("archivo descargado desde GCS")
         if existe_hoja(ruta_excel, nombre_hoja):
             print('Existe la hoja')
             copiar_datos(df, ruta_excel, nombre_hoja, fila_inicial)
@@ -105,6 +106,7 @@ def guardar_registros(campus, df, fecha_solicitada, almacenamiento, descargado):
             wb = openpyxl.load_workbook(ruta_excel)
             wb.create_sheet(nombre_hoja)
             wb.save(ruta_excel)
+            print("se guarda la nueva hoja")
     elif busqueda == 'No encontrado' :
         wb = openpyxl.Workbook()
         hoja_nueva = wb.active
@@ -113,8 +115,11 @@ def guardar_registros(campus, df, fecha_solicitada, almacenamiento, descargado):
     elif busqueda == 'Path invalido':
         sys.exit(1)
     
+    print("se copia el formato")
     copiar_formato(almacenamiento, ruta_excel, nombre_hoja)
+    print("se copió el formato")
     copiar_datos(df, ruta_excel, nombre_hoja, fila_inicial)
+    print("se copiaron los datos")
 
     return nombre_excel
 
