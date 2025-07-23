@@ -11,6 +11,7 @@ def obtener_cliente():
     print("credencial cargada")
     
     credentials = service_account.Credentials.from_service_account_file(service_account_file)
+    print("credenciales listas")
     return storage.Client(credentials=credentials)
 
 # Subir un archivo a Google Cloud Storage
