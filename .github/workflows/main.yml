@@ -1,12 +1,8 @@
 name: Ejecutar tours automatizados
-
 on:
-  workflow_dispatch:  # Permite ejecutar manualmente desde GitHub
+  workflow_dispatch:
   schedule:
     - cron: '*/5 * * * *'
-
-permissions:
-  contents: read  # Permiso necesario para leer el contenido del repositorio
 
 jobs:
   ejecutar-script:
@@ -25,7 +21,7 @@ jobs:
           
       - name: Instalar dependencias
         run: pip install -r ../requirements.txt
-
+        
       - name: Ejecutar script principal
         run: python main.py
         env:
