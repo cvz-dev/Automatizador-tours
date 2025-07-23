@@ -125,7 +125,7 @@ def registros_excel():
     print("inicia filtrado de datos") 
     df_norte, df_sur = filtrar_datos("../data/registros_tours.csv")
     print("termina filtrado de datos")
-    fecha_solicitada = datetime(2025, 5, 14).date()
+    fecha_solicitada = datetime(2025, 5, 24).date()
 
     df_sur_fecha = df_sur[df_sur['Día de visita Sur_standar'].dt.date == fecha_solicitada]
     if not df_sur_fecha.empty:
