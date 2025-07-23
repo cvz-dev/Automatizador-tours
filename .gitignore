@@ -255,4 +255,4 @@ $RECYCLE.BIN/
 # Credenciales de Google
 scripts/credenciales/
 *.json
-token.json
+#token.json
