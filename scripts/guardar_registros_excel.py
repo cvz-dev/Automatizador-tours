@@ -78,17 +78,21 @@ def guardar_registros(campus, df, fecha_solicitada, almacenamiento, descargado):
     año = fecha_solicitada.strftime("%Y")
     nombre_hoja = dia + " de " + mes
     nombre_excel = "Tour puertas abiertas " + mes + " " + año
+    print("se va a guardar la ruta")
     ruta_excel = '../data/' + nombre_excel + '.xlsx'
+    print("se guardó la ruta")
     fila_inicial = 8 if campus == "sur" else 4
 
     if (almacenamiento == "local"):
         busqueda = buscar_archivo("../data", nombre_excel)
     elif (almacenamiento == "nube"):
+        print("se busca archivo")
         if descargado:
             busqueda = buscar_archivo("../data", nombre_excel)
         else:
             busqueda = existe_archivo(f"data/{nombre_excel}.xlsx", "tours-automaticos")
-
+        print("se encontró archico")
+            
     if busqueda == 'Encontrado':
         if (almacenamiento == "nube" and descargado == False):
             descargar_archivo(ruta_excel, f"data/{nombre_excel}.xlsx", "tours-automaticos")
