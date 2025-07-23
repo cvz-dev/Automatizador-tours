@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 def obtener_cliente():
     load_dotenv()
     service_account_file = os.getenv("CREDENCIAL_GOOGLE")
+    print("credencial cargada")
     
     credentials = service_account.Credentials.from_service_account_file(service_account_file)
     return storage.Client(credentials=credentials)
