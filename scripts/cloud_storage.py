@@ -36,7 +36,7 @@ def obtener_cliente():
     except json.JSONDecodeError as e:
         raise Exception(f"Error al parsear JSON de credenciales: {e}")
     except Exception as e:
-        raise Exception(f"Error al cargar credenciales: {e}"credentials=credentials)
+        raise Exception(f"Error al cargar credenciales: {e}")
 
 # Subir un archivo a Google Cloud Storage
 def subir_archivo(ruta_local, ruta_nube, nombre_bucket="tours-automaticos"):
