@@ -251,3 +251,8 @@ $RECYCLE.BIN/
 *.bak
 *.orig
 *.rej
+
+# Credenciales de Google
+scripts/credenciales/
+*.json
+#token.json

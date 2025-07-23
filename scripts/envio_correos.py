@@ -27,15 +27,15 @@ def envio_registros(fecha, registros_norte, registros_sur, nombre_excel):
         elif (registros_norte or registros_sur):
             if (registros_norte):
                 cuerpo = "Buena tarde espero se encuentren de lo mejor\n" \
-            "Adjunto únicamente los registros del campus norte para el tour de puertas abiertas debido a que no hay" \
+            "Adjunto únicamente los registros del campus norte para el tour de puertas abiertas debido a que no hay " \
             "registros disponibles para el campus sur"
             else:
                 cuerpo = "Buena tarde espero se encuentren de lo mejor\n" \
-            "Adjunto únicamente los registros del campus sur para el tour de puertas abiertas debido a que no hay" \
+            "Adjunto únicamente los registros del campus sur para el tour de puertas abiertas debido a que no hay " \
             "registros disponibles para el campus norte"
         else:
             cuerpo = "Buena tarde espero se encuentren de lo mejor\n" \
-            "Escribo este correo con el fin de comentarles que no hay registros disponibles para ninguno de los dos campus" \
+            "Escribo este correo con el fin de comentarles que no hay registros disponibles para ninguno de los dos campus " \
             "para el tour de puertas abiertas"
         
         # Se crea el objeto que va a almacenar el mensaje
@@ -47,13 +47,10 @@ def envio_registros(fecha, registros_norte, registros_sur, nombre_excel):
         # Agregamos el cuerpo del mensaje
         mensaje.attach(MIMEText(cuerpo, 'plain', 'utf-8'))
 
-        # Guardamos el archivo de excel con los registros
-        ruta_excel = f"../data/{nombre_excel}"
-        #nombre_excel = os.path.basename(registros_excel)
-        print(nombre_excel)
-
         # Definimos si se va a adjuntar o no el archivo de excel
         if registros_norte or registros_sur:
+            # Guardamos la ruta del excel con los registros
+            ruta_excel = f"../data/{nombre_excel}"
             with open(ruta_excel, "rb") as attachment:
                 # Agregamos el archivo de excel
                 part = MIMEBase("application", "vnd.openxmlformats-officedocument.spreadsheetml.sheet")
