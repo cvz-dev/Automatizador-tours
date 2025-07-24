@@ -102,7 +102,7 @@ def obtener_registros_hubspot ():
         hubspot_token = os.getenv('HUBSPOT_TOKEN')
 
         # ID del formulario que quieres consultar
-        form_id = '924d72ee-3bb4-4f76-a9c7-4a129518fa91'
+        form_id = os.getenv('FORM_ID')
 
         # Endpoint para obtener envíos del formulario
         url = f'https://api.hubapi.com/form-integrations/v1/submissions/forms/{form_id}'
