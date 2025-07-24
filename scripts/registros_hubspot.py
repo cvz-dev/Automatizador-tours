@@ -201,7 +201,7 @@ def obtener_registros_hubspot ():
             return False
         
     except Exception as desc:
-        print("❌ Error en obtener_registros_hubspot():", desc)
+        print("Error en obtener_registros_hubspot():", desc)
         import traceback
         traceback.print_exc()
         return False

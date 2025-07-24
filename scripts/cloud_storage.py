@@ -19,19 +19,16 @@ def obtener_cliente():
     try:
         # Caso 1: GitHub Actions - la variable contiene el JSON completo
         if credenciales.strip().startswith('{'):
-            print("Usando credenciales desde JSON en variable de entorno")
             credentials_dict = json.loads(credenciales)
             credentials = service_account.Credentials.from_service_account_info(credentials_dict)
             
         # Caso 2: Desarrollo local - la variable contiene la ruta al archivo
         elif os.path.isfile(credenciales):
-            print("Usando credenciales desde archivo local")
             credentials = service_account.Credentials.from_service_account_file(credenciales)
             
         else:
             raise Exception("CREDENCIAL_GOOGLE no es un JSON válido ni una ruta de archivo válida")
         
-        print("Credenciales cargadas exitosamente")
         return storage.Client(credentials=credentials)
         
     except json.JSONDecodeError as e:
@@ -82,9 +79,7 @@ def descargar_archivo(ruta_local, ruta_nube, nombre_bucket="tours-automaticos"):
 # Regresa true si el archivo existe en GCS y False si no existe
 def existe_archivo(ruta_gcs, nombre_bucket="tours-automaticos"):
     try:
-        print("buscar cliente")
         cliente = obtener_cliente()
-        print("se obtiene el cliente")
         bucket = cliente.bucket(nombre_bucket)
         archivo_gcs = bucket.blob(ruta_gcs)
         

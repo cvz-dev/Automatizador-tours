@@ -4,10 +4,21 @@ import re
 import openpyxl
 import sys
 from copy import copy
-from datetime import datetime
+from datetime import datetime, timedelta
 from filtrador import filtrar_datos
 from dotenv import load_dotenv
 from cloud_storage import subir_archivo, descargar_archivo, existe_archivo
+
+def obtener_fecha():
+    hoy = datetime.now()
+
+    # Para el viernes se verifica el tour del día siguiente
+    if hoy.weekday() == 4:
+        fecha_tour = hoy + timedelta(days=1)
+    else:
+        fecha_tour = hoy
+    
+    return fecha_tour.date()
 
 def buscar_archivo(ruta, nombre_archivo):
     try:
@@ -78,35 +89,27 @@ def guardar_registros(campus, df, fecha_solicitada, almacenamiento, descargado):
     año = fecha_solicitada.strftime("%Y")
     nombre_hoja = dia + " de " + mes
     nombre_excel = "Tour puertas abiertas " + mes + " " + año
-    print("se va a guardar la ruta")
     ruta_excel = '../data/' + nombre_excel + '.xlsx'
-    print("se guardó la ruta")
     fila_inicial = 8 if campus == "sur" else 4
 
     if (almacenamiento == "local"):
         busqueda = buscar_archivo("../data", nombre_excel)
     elif (almacenamiento == "nube"):
-        print("se busca archivo")
         if descargado:
             busqueda = buscar_archivo("../data", nombre_excel)
         else:
             busqueda = existe_archivo(f"data/{nombre_excel}.xlsx", "tours-automaticos")
-        print("se encontró archivo", busqueda)
             
     if busqueda == 'Encontrado':
         if (almacenamiento == "nube" and descargado == False):
             descargar_archivo(ruta_excel, f"data/{nombre_excel}.xlsx", "tours-automaticos")
-            print("archivo descargado desde GCS")
         if existe_hoja(ruta_excel, nombre_hoja):
-            print('Existe la hoja')
             copiar_datos(df, ruta_excel, nombre_hoja, fila_inicial)
             return nombre_excel
         else:
-            print('No existe la hoja')
             wb = openpyxl.load_workbook(ruta_excel)
             wb.create_sheet(nombre_hoja)
             wb.save(ruta_excel)
-            print("se guarda la nueva hoja")
     elif busqueda == 'No encontrado' :
         wb = openpyxl.Workbook()
         hoja_nueva = wb.active
@@ -115,34 +118,28 @@ def guardar_registros(campus, df, fecha_solicitada, almacenamiento, descargado):
     elif busqueda == 'Path invalido':
         sys.exit(1)
     
-    print("se copia el formato")
     copiar_formato(almacenamiento, ruta_excel, nombre_hoja)
-    print("se copió el formato")
     copiar_datos(df, ruta_excel, nombre_hoja, fila_inicial)
-    print("se copiaron los datos")
 
     return nombre_excel
 
-def registros_excel():
+def registros_excel(fecha_solicitada=None):
     existen_registros_norte = False
     existen_registros_sur = False
     descargado = False
     nombre_excel = None
     load_dotenv()
     almacenamiento = os.getenv("MODO_ALMACENAMIENTO")
+    if fecha_solicitada is None:
+        fecha_solicitada = obtener_fecha()
     
-    print("inicia filtrado de datos") 
     df_norte, df_sur = filtrar_datos("../data/registros_tours.csv")
-    print("termina filtrado de datos")
-    fecha_solicitada = datetime(2025, 5, 24).date()
 
     df_sur_fecha = df_sur[df_sur['Día de visita Sur_standar'].dt.date == fecha_solicitada]
     if not df_sur_fecha.empty:
         df_sur_fecha = df_sur_fecha.drop('Día de visita Sur_standar', axis=1)
         df_sur_fecha = df_sur_fecha.sort_values(by='Nombre')
-        print("se guardan registros sur")
         nombre_excel = guardar_registros("sur", df_sur_fecha, fecha_solicitada, almacenamiento, descargado)
-        print("se guardaron los registros sur")
         existen_registros_sur = True
         descargado = True
 
@@ -150,17 +147,14 @@ def registros_excel():
     if not df_norte_fecha.empty:
         df_norte_fecha = df_norte_fecha.drop('Día de visita Norte_standar', axis=1)
         df_norte_fecha = df_norte_fecha.sort_values(by='Nombre')
-        print("se guardan registros norte")
         if not nombre_excel: 
             nombre_excel = guardar_registros("norte", df_norte_fecha, fecha_solicitada, almacenamiento, descargado)
         else: 
             guardar_registros("norte", df_norte_fecha, fecha_solicitada, almacenamiento, descargado)
-        print("se guardaron registros norte")
         existen_registros_norte = True
 
     if (almacenamiento == "nube" and (existen_registros_norte or existen_registros_sur)):
         subir_archivo(f"../data/{nombre_excel}.xlsx", f"data/{nombre_excel}.xlsx", "tours-automaticos")
         nombre_excel = nombre_excel + ".xlsx"
     fecha_solicitada_string = fecha_solicitada.strftime("%d %m %Y")
-    print("todo listo en Excel")
     return fecha_solicitada_string, existen_registros_norte, existen_registros_sur, nombre_excel
