@@ -31,6 +31,7 @@ jobs:
         env:
           MODO_ALMACENAMIENTO: ${{ secrets.MODO_ALMACENAMIENTO }}
           HUBSPOT_TOKEN: ${{ secrets.HUBSPOT_TOKEN }}
+          FORM_ID: ${{ secrets.FORM_ID }}
           CREDENCIAL_GOOGLE: ${{ secrets.CREDENCIAL_GOOGLE }}
           USUARIO: ${{ secrets.USUARIO }}
           APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
