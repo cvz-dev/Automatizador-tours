@@ -1,6 +1,6 @@
 name: Ejecutar tours automatizados
 on:
-  # workflow_dispatch:
+  workflow_dispatch:
   # push:
     # branches: [main]
   schedule:
