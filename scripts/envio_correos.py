@@ -22,19 +22,19 @@ def envio_registros(fecha, registros_norte, registros_sur, nombre_excel):
 
         # Se define el cuerpo del correo dependiendo de si existen registros en el campus norte y sur
         if (registros_norte and registros_sur):
-            cuerpo = "Buena tarde espero se encuentren de lo mejor\n" \
+            cuerpo = "Buena tarde espero se encuentren de lo mejor.\n\n" \
             "Les adjunto los registros para el tour de puertas abiertas del campus norte y sur"
         elif (registros_norte or registros_sur):
             if (registros_norte):
-                cuerpo = "Buena tarde espero se encuentren de lo mejor\n" \
+                cuerpo = "Buena tarde espero se encuentren de lo mejor.\n\n" \
             "Adjunto únicamente los registros del campus norte para el tour de puertas abiertas debido a que no hay " \
             "registros disponibles para el campus sur"
             else:
-                cuerpo = "Buena tarde espero se encuentren de lo mejor\n" \
+                cuerpo = "Buena tarde espero se encuentren de lo mejor.\n\n" \
             "Adjunto únicamente los registros del campus sur para el tour de puertas abiertas debido a que no hay " \
             "registros disponibles para el campus norte"
         else:
-            cuerpo = "Buena tarde espero se encuentren de lo mejor\n" \
+            cuerpo = "Buena tarde espero se encuentren de lo mejor.\n\n" \
             "Escribo este correo con el fin de comentarles que no hay registros disponibles para ninguno de los dos campus " \
             "para el tour de puertas abiertas"
         
