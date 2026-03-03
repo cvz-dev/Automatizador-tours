@@ -29,6 +29,10 @@ def limpiar_fecha(fecha):
             else:
                 fecha = re.sub(r"(\d{4})(-)", r"\1 \2", fecha)
 
+            #Buscamos un gion que pueda tener 0 o más espacios a los lados y lo reemplaza por un estándar " - " y abajo verificamos que no existan espacios dobles despúes del reempazo
+            fecha = re.sub(r"\s*-\s*", " - ", fecha)
+            fecha = re.sub(r"\s+", " ", fecha).strip()
+
             fecha = re.sub(r"(\d{2})(\d{4})",r"\1 \2",fecha)
             fecha = re.sub(r"(\d{1,2}:\d{2})(am|pm)", r"\1 \2", fecha)
             fecha = datetime.strptime(fecha, "%d de %m %Y - %I:%M %p")

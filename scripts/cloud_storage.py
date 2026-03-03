@@ -7,10 +7,9 @@ from datetime import datetime, timedelta
 
 # Conectarse a Google Cloud Storage
 def obtener_cliente():
-    """Obtiene cliente de Google Cloud Storage compatible con GitHub Actions y desarrollo local"""
+    """Obtiene cliente de GCS compatible con GitHub Actions y desarrollo local"""
     load_dotenv()
     
-    # Obtener credenciales desde variable de entorno
     credenciales = os.getenv("CREDENCIAL_GOOGLE")
     
     if not credenciales:
@@ -22,17 +21,24 @@ def obtener_cliente():
             credentials_dict = json.loads(credenciales)
             credentials = service_account.Credentials.from_service_account_info(credentials_dict)
             
-        # Caso 2: Desarrollo local - la variable contiene la ruta al archivo
-        elif os.path.isfile(credenciales):
-            credentials = service_account.Credentials.from_service_account_file(credenciales)
-            
+        # Caso 2: Desarrollo local - Manejo de ruta inteligente
         else:
-            raise Exception("CREDENCIAL_GOOGLE no es un JSON válido ni una ruta de archivo válida")
+            # Si la ruta no es absoluta, la construimos relativa a este archivo (.py)
+            if not os.path.isabs(credenciales):
+                # Obtiene la carpeta donde está 'cloud_storage.py' (scripts/)
+                base_path = os.path.dirname(os.path.abspath(__file__))
+                # Une 'scripts/' con 'credenciales/tours-automaticos-clave.json'
+                ruta_completa = os.path.join(base_path, credenciales)
+            else:
+                ruta_completa = credenciales
+
+            if os.path.isfile(ruta_completa):
+                credentials = service_account.Credentials.from_service_account_file(ruta_completa)
+            else:
+                raise Exception(f"No se encontró el archivo JSON en: {ruta_completa}")
         
         return storage.Client(credentials=credentials)
         
-    except json.JSONDecodeError as e:
-        raise Exception(f"Error al parsear JSON de credenciales: {e}")
     except Exception as e:
         raise Exception(f"Error al cargar credenciales: {e}")
 

@@ -50,7 +50,7 @@ def envio_registros(fecha, registros_norte, registros_sur, nombre_excel):
         # Definimos si se va a adjuntar o no el archivo de excel
         if registros_norte or registros_sur:
             # Guardamos la ruta del excel con los registros
-            ruta_excel = f"../data/{nombre_excel}"
+            ruta_excel = f"../data/{nombre_excel}.xlsx"
             with open(ruta_excel, "rb") as attachment:
                 # Agregamos el archivo de excel
                 part = MIMEBase("application", "vnd.openxmlformats-officedocument.spreadsheetml.sheet")
