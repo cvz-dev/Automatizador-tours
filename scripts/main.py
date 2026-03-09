@@ -6,8 +6,8 @@ from envio_correos import envio_registros
 from datetime import datetime
 
 def main():
-    #fecha_solicitada = None #datetime(2025, 7, 30).date()
-    fecha_solicitada = datetime(2026, 2, 28).date()
+    fecha_solicitada = None #datetime(2025, 7, 30).date()
+    #fecha_solicitada = datetime(2026, 2, 28).date()
 
     try:
         print("Inicia hubspot")
